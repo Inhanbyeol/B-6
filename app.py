@@ -1,1 +1,1 @@
-print('test_sumin')
+print('get_test_JT')
