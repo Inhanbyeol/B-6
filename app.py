@@ -22,6 +22,8 @@ def createUsers():
        return jsonify(1)
     else :
        return jsonify(0)
+    
+# 이부분 지우시고 붙여넣기 해주세요
 
 if __name__ == '__main__':
   app.run('0.0.0.0', port=3000, debug=True)
