@@ -9,10 +9,6 @@ db = client.data
 def home():
   return render_template('index.html')
 
-@app.route('/serve')
-def serve():
-  return render_template('serve.html')
-
 @app.route('/create')
 def create():
   return render_template('create.html')
