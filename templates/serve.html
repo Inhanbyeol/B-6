@@ -139,18 +139,22 @@
             commentbtn();
             $('#btn1').click(function () {
                 toggleContent("최수민");
+                show_comment("최수민");
             });
 
             $('#btn2').click(function () {
                 toggleContent("홍진택");
+                show_comment("홍진택");
             });
 
             $('#btn3').click(function () {
                 toggleContent("인한별");
+                show_comment("인한별");
             });
 
             $('#btn4').click(function () {
                 toggleContent("이재우");
+                show_comment("이재우");
             });
         });
         function btn() {
@@ -169,10 +173,54 @@
                 $('#comment-form').hide();
             }
         }
+        //comment db 저장
+        function save_comment() {
+            let name = $('#name_id').text().substring(5, 8);
+            let id = $('#id').val()
+            let comment = $('#comment').val()
+            console.log(name + "mypage")
+            let formData = new FormData();
+            formData.append("id_give", id);
+            formData.append("comment_give", comment);
+            formData.append("name", name);
+            fetch("/testc", { method: "POST", body: formData }).then((response) => response.json()).then((data) => {
+                alert(data.msg);
+                location.reload();
+            }).catch((error) => console.error(error));
+
+
+        }
+        //comment db 출력
+        function show_comment(name) {
+            fetch('/testc').then((res) => res.json()).then((data2) => {
+                let column = data2['result']
+
+                $('#card').empty();
+                column.forEach((a) => {
+                    if (name == a['name']) {
+                        console.log('show' + a['name'])
+                        let id = a['id']
+                        let comment = a['comment']
+
+                        let temp2_html = `<div class="card">
+                                            <div class="card-body">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p>${comment}</p>
+                                                    <footer class="blockquote-footer">${id}</footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>`
+                        $('#card').append(temp2_html);
+
+                    }
+                })
+            })
+        }
 
         function toggleContent(name) {
             var mypage = $('#mypage');
             var team = $('#team');
+
             // 현재 표시 상태 확인
             var isVisible = mypage.is(':visible');
 
@@ -243,7 +291,7 @@
             팀원: 최수민,홍진택,인한별,이재우
         </div>
     </div>
-    
+
     <div class="mypage" id="mypage">
         <div class="mypost" id="mypost">
             <div class="image_box">
