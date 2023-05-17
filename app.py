@@ -9,6 +9,10 @@ db = client.data
 def home():
   return render_template('index.html')
 
+@app.route('/serve')
+def serve():
+  return render_template('serve.html')
+
 @app.route('/create')
 def create():
   return render_template('create.html')
@@ -22,8 +26,6 @@ def createUsers():
        return jsonify(1)
     else :
        return jsonify(0)
-    
-# 이부분 지우시고 붙여넣기 해주세요
 
 #정보 출력
 @app.route("/user", methods=["GET"])
