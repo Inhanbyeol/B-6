@@ -1,91 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>B반 6조</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
 </head>
 <style>
-    .box{  background-color:goldenrod;
+    .box {
+        background-color: goldenrod;
         padding: 50px 30px;
         font-size: 50px;
-margin: 0px;
-    text-align: center;
-    
+        margin: 0px;
+        text-align: center;
+
     }
-  
-
-.img{text-align: center;
-    
-    margin: 80px;
-}
 
 
-.name{text-align: center;
-    font-style: oblique;
-   
-padding: 50px;
-margin: 100px auto 30px auto;
-font-size: 30px;
-}
-.button {
+    .inputline {
+        width: 500px;
+        text-align: center;
+        margin: auto;
+        margin-top: 30px;
+    }
 
-background-color: moccasin;
 
-border-radius: 10%;
+    .name {
+        text-align: center;
+        font-style: oblique;
 
-color: black;
+        padding: 50px;
+        margin: 100px auto 30px auto;
+        font-size: 30px;
+    }
 
-padding: 15px 30px;
+    .button {
 
-text-align: center;
+        background-color: moccasin;
 
-text-decoration: none;
+        border-radius: 10%;
 
-display: inline-block;
+        color: black;
 
-font-size: 20px;
+        padding: 15px 30px;
 
-margin: 6px 4px;
+        text-align: center;
 
-cursor: pointer;
+        text-decoration: none;
 
-}
+        display: inline-block;
 
- 
+        font-size: 20px;
+
+        margin: 6px 4px;
+
+        cursor: pointer;
+
+    }
 </style>
+
+<script>
+    window.addEventListener('load', () => {
+        const addbtn = document.getElementById('addbtn');
+        const photoUrl = document.getElementById('photoUrl');
+        const userName = document.getElementById('userName');
+        const userEmail = document.getElementById('userEmail');
+        const blogUrl = document.getElementById('blogUrl');
+        const oneLine = document.getElementById('oneLine');
+
+
+        addbtn.addEventListener('click', async () => {
+            if (!photoUrl.value) return alert('프로필 사진 URL을 입력해 주세요.')
+            if (!userName.value) return alert('이름을 입력해 주세요')
+            if (!userEmail.value) return alert('이메일 주소를 입력해 주세요')
+            if (!blogUrl.value) return alert('블로그 주소를 입력해 주세요')
+            if (!oneLine.value) return alert('한줄 소개를 입력해 주세요')
+
+            const api = await fetch("/create", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(new CreateUsers(photoUrl.value, userName.value, userEmail.value, blogUrl.value, oneLine.value)),
+            });
+
+            const result = await api.json();
+
+            if (result == 1) {
+                alert('생성되었습니다.')
+                window.location.reload();
+            } else {
+                alert('생성 실패')
+            }
+        });
+
+        class CreateUsers {
+            constructor(photoUrl, name, email, blogUrl, oneLine) {
+                this.photoUrl = photoUrl;
+                this.name = name;
+                this.email = email;
+                this.blogUrl = blogUrl;
+                this.oneLine = oneLine;
+            }
+        }
+    })
+</script>
 
 <body>
     <DIV class="box">
         <button class='button'>최수민</button>
-              
+
         <button class='button'>홍진택</button>
-       
-               
+
+
         <button class='button'>인한별</button>
-            
+
         <button class='button'>이재우</button>
 
-     
+
     </DIV>
 
-    <div class="img">
-        <img src="https://item.kakaocdn.net/do/db89a39c64a3276717cf75d0e52c26db9f5287469802eca457586a25a096fd31"
-        style="width:300px; height:300px;">
+    <div class="inputline">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="photoUrl" placeholder="-">
+            <label for="floatingInput">프로필 사진 URL</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="userName" placeholder="-">
+            <label for="floatingInput">이름</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="userEmail" placeholder="-">
+            <label for="floatingInput">이메일 주소</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="blogUrl" placeholder="-">
+            <label for="floatingInput">블로그 URL</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="oneLine" placeholder="-">
+            <label for="floatingInput">한줄 소개</label>
+        </div>
+        <div class="d-grid gap-2 form-floating mb-3"><button type="button" class="btn btn-warning" id="addbtn">사용자
+                추가</button>
+        </div>
+
     </div>
-    <div class='name'>
-    <p>팀명: 삐그덕</p>
-    
-       팀원: 최수민,홍진택,인한별,이재우
-    </div>
-
-
-    
-
-
-
-
-    
 </body>
+
 </html>
