@@ -9,8 +9,12 @@ db = client.data
 def home():
   return render_template('index.html')
 
+@app.route('/create')
+def create():
+  return render_template('create.html')
+
 @app.route("/create", methods=["POST"])
-def movie_del():
+def createUsers():
     info = request.get_json()
 
     db.users.insert_one({photoUrl : info.photourl, name : info.name, email : info.email, blogUrl : info.blogUrl, oneLine : oneline})
