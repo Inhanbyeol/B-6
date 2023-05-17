@@ -16,9 +16,12 @@ def create():
 @app.route("/create", methods=["POST"])
 def createUsers():
     info = request.get_json()
-    db.users.insert_one({"photoUrl" : info['photoUrl'], "name" : info['name'], "email" : info['email'], "blogUrl" : info['blogUrl'], "oneLine" : info['oneLine']})
-    
-    return jsonify(1)
+    result = db.users.insert_one({"photoUrl" : info['photoUrl'], "name" : info['name'], "email" : info['email'], "blogUrl" : info['blogUrl'], "oneLine" : info['oneLine']})
+
+    if result.acknowledged == True :
+       return jsonify(1)
+    else :
+       return jsonify(0)
 
 if __name__ == '__main__':
   app.run('0.0.0.0', port=3000, debug=True)
