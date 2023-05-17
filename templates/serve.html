@@ -20,6 +20,7 @@
         * {
             font-family: "Noto Serif KR", serif;
         }
+
         .box {
             background-color: goldenrod;
             padding: 50px 30px;
@@ -28,11 +29,13 @@
             text-align: center;
 
         }
+
         .img {
             text-align: center;
 
             margin: 80px;
         }
+
         .name {
             text-align: center;
 
@@ -40,6 +43,7 @@
             margin: 100px auto 30px auto;
             font-size: 30px;
         }
+
         .button {
 
             background-color: moccasin;
@@ -58,6 +62,7 @@
             cursor: pointer;
 
         }
+
         .mypost {
             width: 95%;
             height: 95%;
@@ -73,13 +78,16 @@
             margin: 2.5% auto 2.5% 2.5%;
             padding-top: 2.5%;
         }
+
         .comment-form {
             padding: 5% 5% 5% 5%;
             border-radius: 10px;
         }
+
         .comment-form>button {
             margin-top: 2.5%;
         }
+
         .image_box {
             background-color: greenyellow;
             width: 500px;
@@ -89,6 +97,7 @@
 
             margin: 0% 5% auto 5%;
         }
+
         .image {
             background-color: greenyellow;
             width: 500px;
@@ -97,13 +106,16 @@
             border-radius: 10px;
 
         }
+
         .information {
             margin-right: 5%;
         }
+
         .content {
             margin-top: 100px;
             margin-right: auto;
         }
+
         .comment-card {
 
             width: 60%;
@@ -111,25 +123,53 @@
 
             margin: 0% auto auto auto;
         }
+
         .comment-card>button {
             margin: 5% 5% 2.5% auto;
         }
+
         .card {
             margin-bottom: 2.5%;
+        }
+
+        .information-form {
+            width: 60%;
+            height: auto;
+            margin: 5% auto auto auto;
+            box-shadow: 0px 0px 3px 0px gray;
+            padding: 3% 3% 3% 3%;
         }
     </style>
     <script>
         $(document).ready(function () {
             btn();
             commentbtn();
+
+            $('#btn1').click(function () {
+                toggleContent($('#btn1').text());
+            });
+
+            $('#btn2').click(function () {
+                toggleContent("홍진택");
+            });
+
+            $('#btn3').click(function () {
+                toggleContent("인한별");
+            });
+
+            $('#btn4').click(function () {
+                toggleContent("이재우");
+            });
         });
         function btn() {
             if ($('#mypage').css("display") == "none") {
                 $('#mypage').show();
                 $('#team').hide();
+                $('#information-form').hide();
             } else {
                 $('#mypage').hide();
                 $('#team').show();
+                $('#information-form').hide();
             }
         }
         function commentbtn() {
@@ -139,18 +179,132 @@
                 $('#comment-form').hide();
             }
         }
+        function insert_btn() {
+            if ($('#information-form').css("display") == "none") {
+                $('#mypage').hide();
+                $('#team').hide();
+                $('#information-form').show();
+            } else {
+                $('#mypage').hide();
+                $('#team').show();
+                $('#information-form').hide();
+            }
+        }
+
+        // db 저장 함수
+        function save_information() {
+            let name = $('#name').val()
+            let image = $('#image').val()
+            let blog = $('#blog').val()
+            let word = $('#word').val()
+            let email = $('#email').val()
+
+            let formData = new FormData();
+            formData.append("name_give", name);
+            formData.append("image_give", image);
+            formData.append("blog_give", blog);
+            formData.append("word_give", word);
+            formData.append("email_give", email);
+
+            fetch("/test", { method: "POST", body: formData }).then((response) => response.json()).then((data) => {
+                alert(data.msg);
+                location.reload();
+            }).catch((error) => console.error(error));
+        }
+
+        function toggleContent(name) {
+            var mypage = $('#mypage');
+            var team = $('#team');
+            console.log(name);
+            // 현재 표시 상태 확인
+            var isVisible = mypage.is(':visible');
+
+            // 내용 변경
+
+            fetch('/test').then((res) => res.json()).then((data) => {
+                let rows = data['result']
+                $('#mypage').empty();
+                rows.forEach((a) => {
+                    if (name == a['name']) {
+                        console.log(a['name'] + 'new');
+                        let a_name = a['name']
+                        let email = a['email']
+                        let image = a['image']
+                        let blog = a['blog']
+                        let word = a['word']
+
+                        let temp_html = `<div class="mypost" id="mypost">
+                                            <div class="image_box">
+                                                <img src="${image}"
+                                                    class="image" id="image" alt="...">
+                                            </div>
+                                            <div class="information">
+                                                <h2 id="name">이름 : ${name}</h2>
+                                                <br>
+                                                <h3 id="email">이메일 주소 : ${email}</h3>
+                                                <br>
+                                                <h3 id="blog">블로그 :
+                                                    <a href="${blog}"> ${blog}</a>
+                                                </h3>
+                                                <br>
+                                                <h3 id="word">한마디 : ${word}</h3>
+                                            </div>
+                                        </div>
+                                        <div class="comment-card" id="comment-card">
+                                            <button type="button" class="btn btn-secondary" onclick="commentbtn()">답글달기</button>
+                                            <div class="comment-form" id="comment-form">
+                                                <div class="form-floating mb-3">
+                                                    <input type="text" class="form-control" id="id" placeholder="url" />
+                                                    <label for="floatingInput">닉네임</label>
+                                                </div>
+                                                <div class="form-floating">
+                                                    <textarea class="form-control" placeholder="Leave a comment here" id="comment"
+                                                        style="height: 100px"></textarea>
+                                                    <label for="floatingTextarea2">응원댓글</label>
+                                                </div>
+                                                <button onclick="save_comment()" type="button" class="btn btn-dark">
+                                                    댓글 남기기
+                                                </button>
+                                            </div>
+                                            <div class="card" id="card">
+                                                <div class="card-body">
+                                                    <blockquote class="blockquote mb-0">
+                                                        <p>새로운 앨범 너무 멋져요!</p>
+                                                        <footer class="blockquote-footer">호빵맨</footer>
+                                                    </blockquote>
+                                                </div>
+                                            </div>
+                                        </div>`
+                        $('#mypage').append(temp_html);
+                    }
+                })
+
+            })
+            
+
+            // 표시 상태 변경
+            if (isVisible) {
+                mypage.hide();
+                team.show();
+            } else {
+                mypage.show();
+                team.hide();
+            }
+        }
     </script>
 </head>
 
 <body>
-    <DIV class="box">
-        <button class='button' id="btn" onclick="btn()">최수민</button>
+    <DIV class="box" id="box">
+        <button class='button' id="btn1">최수민</button>
 
-        <button class='button' id="btn" onclick="btn()">홍진택</button>
+        <button class='button' id="btn2">홍진택</button>
 
-        <button class='button' id="btn" onclick="btn()">인한별</button>
+        <button class='button' id="btn3">인한별</button>
 
-        <button class='button' id="btn" onclick="btn()">이재우</button>
+        <button class='button' id="btn4">이재우</button>
+
+        <button class='button' id="insert_btn" onclick="insert_btn()">입력</button>
     </DIV>
     <div id="team">
         <div class="img">
@@ -161,6 +315,34 @@
             <p>팀명: 삐그덕</p>
 
             팀원: 최수민,홍진택,인한별,이재우
+        </div>
+    </div>
+    <div id="information-form">
+        <div class="information-form">
+            <div class="input-group mb-3">
+                <label for="reviewImg">사진URL </label>
+                <input type="email" class="form-control" id="image" placeholder="https://" />
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="name" placeholder="url" />
+                <label for="floatingInput">이름</label>
+            </div>
+            <div class="input-group mb-3">
+                <label for="reviewImg">email </label>
+                <input type="email" class="form-control" id="email" placeholder="" />
+            </div>
+            <div class="input-group mb-3">
+                <label for="reviewImg">블로그</label>
+                <input type="email" class="form-control" id="blog" placeholder="blog" />
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="word" placeholder="url" />
+                <label for="floatingInput">한마디</label>
+            </div>
+
+            <button onclick="save_information()" type="button" class="btn btn-dark">
+                저장하기
+            </button>
         </div>
     </div>
     <div class="mypage" id="mypage">
@@ -204,8 +386,15 @@
                         <footer class="blockquote-footer">호빵맨</footer>
                     </blockquote>
                 </div>
+                <div class="card-body">
+                    <blockquote class="blockquote mb-0">
+                        <p>새로운 앨범 너무 멋져요!</p>
+                        <footer class="blockquote-footer">호빵맨</footer>
+                    </blockquote>
+                </div>
             </div>
         </div>
     </div>
 </body>
+
 </html>
