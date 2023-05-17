@@ -22,6 +22,8 @@ def createUsers():
        return jsonify(1)
     else :
        return jsonify(0)
+    
+# 이부분 지우시고 붙여넣기 해주세요
 
 #정보 출력
 @app.route("/user", methods=["GET"])
