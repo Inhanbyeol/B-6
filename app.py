@@ -35,8 +35,8 @@ def create_get():
     return jsonify({'result':all_comments,'msg':'get!'})
 
 #데이터 저장
-@app.route("/testc", methods=["POST"])
-def testc_post():
+@app.route("/comment", methods=["POST"])
+def comment_post():
     name_info = request.form['name']
     id_receive = request.form['id_give']
     comment_receive = request.form['comment_give']
@@ -46,14 +46,14 @@ def testc_post():
         'id':id_receive,
         'comment':comment_receive
     }
-    db.testc.insert_one(doc)
+    db.comment.insert_one(doc)
 
     return jsonify({'msg': '1'})
 
 #데이터 호출
-@app.route("/testc", methods=["GET"])
-def testc_get():
-    all_comments = list(db.testc.find({},{'_id':False}))
+@app.route("/comment", methods=["GET"])
+def comment_get():
+    all_comments = list(db.comment.find({},{'_id':False}))
 
     return jsonify({'result':all_comments,'msg':'get!'})
 

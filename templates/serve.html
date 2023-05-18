@@ -160,7 +160,7 @@
             formData.append("id_give", id);
             formData.append("comment_give", comment);
             formData.append("name", name);
-            fetch("/testc", { method: "POST", body: formData }).then((response) => response.json()).then((data) => {
+            fetch("/comment", { method: "POST", body: formData }).then((response) => response.json()).then((data) => {
                 alert(data.msg);
                 location.reload();
             }).catch((error) => console.error(error));
@@ -169,7 +169,7 @@
         }
         //comment db 출력
         function show_comment(name) {
-            fetch('/testc').then((res) => res.json()).then((data2) => {
+            fetch('/comment').then((res) => res.json()).then((data2) => {
                 let column = data2['result']
 
                 $('#card').empty();
