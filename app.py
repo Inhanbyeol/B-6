@@ -13,6 +13,10 @@ def home():
 def create():
   return render_template('create.html')
 
+@app.route('/serve')
+def serve():
+  return render_template('serve.html')
+
 @app.route("/create", methods=["POST"])
 def createUsers():
     info = request.get_json()

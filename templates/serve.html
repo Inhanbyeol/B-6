@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <title>B반 6조</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        * {
+            font-family: "Noto Serif KR", serif;
+        }
+
+        .box {
+            background-color: goldenrod;
+            padding: 50px 30px;
+            font-size: 50px;
+            margin: 8px 8px 8px 8px;
+            text-align: center;
+
+
+        }
+
+        .img {
+            text-align: center;
+
+            margin: 80px;
+        }
+
+        .name {
+            text-align: center;
+
+            padding: 50px;
+            margin: 100px auto 30px auto;
+            font-size: 30px;
+        }
+
+        .button {
+
+            background-color: moccasin;
+            border-radius: 10%;
+
+            color: black;
+
+            padding: 15px 30px;
+
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+
+            font-size: 20px;
+            margin: 6px 4px;
+            cursor: pointer;
+
+        }
+
+        .mypost {
+            width: 95%;
+            height: 95%;
+
+            background-position: center;
+            background-size: cover;
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin: 2.5% auto 2.5% 2.5%;
+            padding-top: 2.5%;
+        }
+
+        .comment-form {
+            padding: 5% 5% 5% 5%;
+            border-radius: 10px;
+        }
+
+        .comment-form>button {
+            margin-top: 2.5%;
+        }
+
+        .image_box {
+            background-color: greenyellow;
+            width: 500px;
+            height: 500px;
+
+            border-radius: 10px;
+
+            margin: 0% 5% auto 5%;
+        }
+
+        .image {
+            background-color: greenyellow;
+            width: 500px;
+            height: 500px;
+
+            border-radius: 10px;
+
+        }
+
+        .information {
+            margin-right: 5%;
+        }
+
+        .content {
+            margin-top: 100px;
+            margin-right: auto;
+        }
+
+        .comment-card {
+
+            width: 60%;
+            height: auto;
+
+            margin: 0% auto auto auto;
+        }
+
+        .comment-card>button {
+            margin: 5% 5% 2.5% auto;
+        }
+
+        .card {
+            margin-bottom: 2.5%;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            const params = new URLSearchParams(window.location.search);
+            const name = params.get('name');
+            console.log(name);
+            show_information(name);
+            show_comment(name);
+            commentbtn();
+        });
+
+        function commentbtn() {
+            if ($('#comment-form').css("display") == "none") {
+                $('#comment-form').show();
+            } else {
+                $('#comment-form').hide();
+            }
+        }
+        //comment db 저장
+        function save_comment() {
+            let name = $('#name_id').text().substring(5, 8);
+            let id = $('#id').val()
+            let comment = $('#comment').val()
+            //console.log(name + "mypage")
+            let formData = new FormData();
+            formData.append("id_give", id);
+            formData.append("comment_give", comment);
+            formData.append("name", name);
+            fetch("/testc", { method: "POST", body: formData }).then((response) => response.json()).then((data) => {
+                alert(data.msg);
+                location.reload();
+            }).catch((error) => console.error(error));
+
+
+        }
+        //comment db 출력
+        function show_comment(name) {
+            fetch('/testc').then((res) => res.json()).then((data2) => {
+                let column = data2['result']
+
+                $('#card').empty();
+                column.forEach((a) => {
+                    if (name == a['name']) {
+                        console.log('show' + a['name'])
+                        let id = a['id']
+                        let comment = a['comment']
+
+                        let temp2_html = `<div class="card">
+                                            <div class="card-body">
+                                                <blockquote class="blockquote mb-0">
+                                                    <p>${comment}</p>
+                                                    <footer class="blockquote-footer">${id}</footer>
+                                                </blockquote>
+                                            </div>
+                                        </div>`
+                        $('#card').append(temp2_html);
+
+                    }
+                })
+            })
+        }
+
+        function show_information(name) {
+            fetch('/user').then((res) => res.json()).then((data) => {
+                let rows = data['result']
+                $('#mypost').empty();
+                //console.log(name + "create");
+
+                $('#box').empty();
+                let name_html = `<p>${name} 페이지</p>
+                                <button class="button" onclick="window.location.href='/serve?name=최수민'">최수민</button>
+                                <button class='button' onclick="window.location.href='/serve?name=홍진택'">홍진택</button>
+                                <button class='button' onclick="window.location.href='/serve?name=인한별'">인한별</button>
+                                <button class='button' onclick="window.location.href='/serve?name=이재우'">이재우</button>
+                                <button class="button" onclick="window.location.href='/'">뒤로가기</button>`
+                $('#box').append(name_html);
+                rows.forEach((a) => {
+                    if (name == a['name']) {
+                        let email = a['email']
+                        let image = a['photoUrl']
+                        let blog = a['blogUrl']
+                        let word = a['oneLine']
+
+                        let temp_html = `<div class="image_box">
+                                                <img src="${image}"
+                                                    class="image" id="image_1" alt="...">
+                                            </div>
+                                            <div class="information">
+                                                <h2 id="name_id">이름 : ${name}</h2>
+                                                <br>
+                                                <h3>이메일 주소 : ${email}</h3>
+                                                <br>
+                                                <h3>블로그 :
+                                                    <a href="${blog}"> ${blog}</a>
+                                                </h3>
+                                                <br>
+                                                <h3>한마디 : ${word}</h3>
+                                            </div>`
+                        $('#mypost').append(temp_html);
+                    }
+                })
+            })
+        }
+    </script>
+</head>
+
+<body>
+    <DIV class="box" id="box">
+        <p style="font-size: 60%;">최수민 페이지</p>
+        <button class="button" onclick="window.location.href='/serve?name=최수민'">최수민</button>
+        <button class='button' onclick="window.location.href='/serve?name=홍진택'">홍진택</button>
+        <button class='button' onclick="window.location.href='/serve?name=인한별'">인한별</button>
+        <button class='button' onclick="window.location.href='/serve?name=이재우'">이재우</button>
+        <button class="button" onclick="window.location.href='/'">뒤로가기</button>
+
+    </DIV>
+
+    <div class="mypage" id="mypage">
+        <div class="mypost" id="mypost">
+            <div class="image_box">
+                <img src="https://www.nextflicks.tv/wp-content/uploads/2023/03/minions-where-to-watch-1620x800.jpg"
+                    class="image" id="image_1" alt="...">
+            </div>
+            <div class="information">
+                <h2 id="name_id">이름 : </h2>
+                <br>
+                <h3>이메일 주소 : </h3>
+                <br>
+                <h3>블로그 :
+                    <a href="https://mbd-tnals634.tistory.com/"> https://mbd-tnals634.tistory.com/</a>
+                </h3>
+                <br>
+                <h3>한마디 : </h3>
+            </div>
+        </div>
+        <div class="comment-card" id="comment-card">
+            <button type="button" class="btn btn-secondary" onclick="commentbtn()">답글달기</button>
+            <div class="comment-form" id="comment-form">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="id" placeholder="url" />
+                    <label for="floatingInput">닉네임</label>
+                </div>
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="Leave a comment here" id="comment"
+                        style="height: 100px"></textarea>
+                    <label for="floatingTextarea2">응원댓글</label>
+                </div>
+                <button onclick="save_comment()" type="button" class="btn btn-dark">
+                    댓글 남기기
+                </button>
+            </div>
+            <div id="card">
+                <div class="card">
+                    <div class="card-body">
+                        <blockquote class="blockquote mb-0">
+                            <p>새로운 앨범 너무 멋져요!</p>
+                            <footer class="blockquote-footer">호빵맨</footer>
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
