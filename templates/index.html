@@ -2,62 +2,124 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
     <title>B반 6조</title>
+
+    <style>
+        .box {
+            background-color: goldenrod;
+            padding: 50px 30px;
+            font-size: 50px;
+            margin: 0px;
+            text-align: center;
+    
+        }
+    
+    
+        .img {
+            text-align: center;
+    
+            margin: 80px;
+        }
+    
+    
+        .name {
+            text-align: center;
+            font-style: oblique;
+    
+            padding: 50px;
+            margin: 100px auto 30px auto;
+            font-size: 30px;
+        }
+    
+        .button {
+    
+            background-color: moccasin;
+    
+            border-radius: 10%;
+    
+            color: black;
+    
+            padding: 15px 30px;
+    
+            text-align: center;
+    
+            text-decoration: none;
+    
+            display: inline-block;
+    
+            font-size: 20px;
+    
+            margin: 6px 4px;
+    
+            cursor: pointer;
+    
+        }
+        .comment-form {
+
+            width: 60%;
+            height: auto;
+
+            margin: 10% auto auto auto;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_btn();
+            userDeleteBtn();
+        });
+        //버튼 출력
+        function show_btn() {
+            fetch('/user').then((res) => res.json()).then((data) => {
+                let column = data['result']
+                $('.box').empty()
+                column.forEach((a) => {
+                    let name = a['name']
+
+                    let temp_html = `<button class="button" onclick="window.location.href='/serve?name=${name}'">${name}</button>`
+                    $('.box').append(temp_html);
+
+                })
+                let temp2_html =`<button class="button" onclick="window.location.href='/create'">+</button>
+                                <button class='button' onclick="userDeleteBtn()">-</button>`
+                $('.box').append(temp2_html);
+            })
+        }
+        function userDelete() {
+
+            let name = $('#name_delete').val()
+            
+            let formData = new FormData();
+            formData.append('name_delete', name);
+            fetch("/user", { method: "DELETE", body: formData }).then((response) => response.json()).then((data) => {
+                alert(data.msg);
+                location.reload();
+            }).catch((error) => console.error(error));
+
+        }
+
+        function userDeleteBtn(){
+            if ($('#delete-form').css("display") == "none") {
+                $('#delete-form').show();
+                $('.img').hide();
+                $('.name').hide();
+            } else {
+                $('#delete-form').hide();
+                $('.img').show();
+                $('.name').show();
+            }
+        }
+    </script>
 </head>
-<style>
-    .box {
-        background-color: goldenrod;
-        padding: 50px 30px;
-        font-size: 50px;
-        margin: 0px;
-        text-align: center;
-
-    }
-
-
-    .img {
-        text-align: center;
-
-        margin: 80px;
-    }
-
-
-    .name {
-        text-align: center;
-        font-style: oblique;
-
-        padding: 50px;
-        margin: 100px auto 30px auto;
-        font-size: 30px;
-    }
-
-    .button {
-
-        background-color: moccasin;
-
-        border-radius: 10%;
-
-        color: black;
-
-        padding: 15px 30px;
-
-        text-align: center;
-
-        text-decoration: none;
-
-        display: inline-block;
-
-        font-size: 20px;
-
-        margin: 6px 4px;
-
-        cursor: pointer;
-
-    }
-</style>
 
 <body>
     <DIV class="box">
@@ -66,6 +128,7 @@
         <button class='button' onclick="window.location.href='/serve?name=인한별'">인한별</button>
         <button class='button' onclick="window.location.href='/serve?name=이재우'">이재우</button>
         <button class="button" onclick="window.location.href='/create'">+</button>
+        <button class='button' onclick="userDeleteBtn()">-</button>
     </DIV>
 
     <div class="img">
@@ -83,7 +146,16 @@
         <br><br><a style="font-weight: 600">약속</a>
         <br><a style="font-size: 80%; font-style: normal;">커밋하기 전 말해주기</a>
     </div>
-
+    
+    <div class="comment-form" id="delete-form">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="name_delete" placeholder="url" />
+            <label for="floatingInput">이름</label>
+        </div>
+        <button onclick="userDelete()" type="button" class="btn btn-dark">
+            삭제하기
+        </button>
+    </div>
 </body>
 
 </html>

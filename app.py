@@ -15,7 +15,11 @@ def create():
 
 @app.route('/serve')
 def serve():
-  return render_template('serve.html')
+  name = request.args.get("name")
+  all_information = list(db.users.find({"name":name},{'_id':False}))
+
+  return render_template('serve.html', info = all_information[0])
+
 
 @app.route("/create", methods=["POST"])
 def createUsers():
@@ -57,6 +61,52 @@ def comment_get():
 
     return jsonify({'result':all_comments,'msg':'get!'})
 
+#데이터 삭제
+@app.route("/comment", methods=["DELETE"])
+def comment_delete():
+    
+    id_delete = request.form['id_delete']
+
+    db.comment.delete_one({'id':id_delete})
+
+    return jsonify({'msg':'1'})
+
+
+#데이터 수정
+@app.route("/comment", methods=["UPDATE"])
+def comment_update():
+    
+    id_update = request.form['id_update']
+    comment_update = request.form['comment_update']
+
+    db.comment.update_one({'id':id_update},{'$set':{'comment':comment_update}})
+
+    return jsonify({'msg':'1'})
+
+#유저데이터 삭제
+@app.route("/user", methods=["DELETE"])
+def user_delete():
+    
+    name_delete = request.form['name_delete']
+
+    db.users.delete_one({'name':name_delete})
+    db.comment.delete_many({'name':name_delete})
+
+    return jsonify({'msg':'1'})
+
+#유저데이터 수정
+@app.route("/user", methods=["UPDATE"])
+def user_update():
+    
+    name_update = request.form['name_update']
+    oneLine_update = request.form['oneLine_update']
+    photoUrl_update = request.form['photoUrl_update']
+    blogUrl_update = request.form['blogUrl_update']
+    email_update = request.form['email_update']
+
+    db.users.update_one({'name':name_update},{'$set':{'oneLine':oneLine_update,'email':email_update,'blogUrl':blogUrl_update,'photoUrl':photoUrl_update}})
+
+    return jsonify({'msg':'1'})
 
 if __name__ == '__main__':
   app.run('0.0.0.0', port=3000, debug=True)
