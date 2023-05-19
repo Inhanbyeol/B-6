@@ -20,6 +20,12 @@ def serve():
 
   return render_template('serve.html', info = all_information[0])
 
+@app.route('/update')
+def update_page():
+  name = request.args.get("name")
+  all_information = list(db.users.find({"name":name},{'_id':False}))
+  return render_template('update.html', info = all_information[0])
+
 
 @app.route("/create", methods=["POST"])
 def createUsers():
